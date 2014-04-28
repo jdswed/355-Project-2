@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Baseball Stats 2013</title>
+    
+    <link rel="stylesheet" type="text/css" href="Project2.css">
+    
+     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#BatterSubmit').click(function () {
+                var payload = {
+                    Team: $('#Team').val(),
+                };
+
+		console.log(payload);
+
+                $.ajax({
+                    url: "/Batters",
+                    type: "POST",
+                    contentType: "application/json",
+                    processData: false,
+                    data: JSON.stringify(payload),
+                    complete: function (data) {
+                        $('#output').html(data.responseText);
+                    }
+                });
+            });
+        });
+    </script>    
+    </head>
+ 
+
+<body>
+    <div id="top">
+    <h1>Baseball Statistics 2013</h1>
+    </div>
+    
+    <div id="navigation">
+      
+    
+<!--      Navigation Sidebar  -->
+
+<ul >
+  <li> <a href="/Home">Home</a></li>
+  <li> <a href="/Teams">Teams</a></li>
+  <li> <a href="/Batters">Batters</a></li>
+  <li> <a href="/Pitchers">Pitchers</a> </li>
+  <li> <a href="/Managers">Managers</a> </li>
+  <li> <a href="/About">About</a> </li>
+</ul>
+
+ 
+    </div>
+    
+    <div id="middle">
+    <h1>Batters</h1>
+        <p1> Enter the name of a team to get their Batters</p1> </br>
+        Team Name: <input id="Team" type="text" /> <br />
+    <input id="BatterSubmit" type="submit" />
+    <p id="output"></p>
+        
+        </div>
+    
+    <div class="footer"> Copyright &copy; SweDroid Technology</div>
+    </body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
