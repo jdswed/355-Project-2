@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Baseball Stats 2013</title>
+    
+    <link rel="stylesheet" type="text/css" href="Project2.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    
+<script type="text/javascript">
+
+    
+     $(document).ready(function () {
+      $('#BatterArb').click(function () {
+      var payload = {
+      Name: $('#Name').val(),
+                };
+
+                console.log(payload);
+
+                $.ajax({
+                    url: "/Views/Batters",
+                    type: "POST",
+                    contentType: "application/json",
+        processData: false,
+                    data: JSON.stringify(payload),
+        complete: function (data) {
+        $('#output').html(data.responseText);
+        }
+        });
+            });
+        });
+ $(document).ready(function () {
+      $('#PitcherArb').click(function () {
+      var payload = {
+      Name: $('#Name').val(),
+                };
+
+                console.log(payload);
+
+                $.ajax({
+                    url: "/Views/Pitchers",
+                    type: "POST",
+                    contentType: "application/json",
+        processData: false,
+                    data: JSON.stringify(payload),
+        complete: function (data) {
+        $('#pout').html(data.responseText);
+        }
+        });
+            });
+        });
+
+    </script>
+    
+    </head>
+ 
+
+<body>
+    <div id="top">
+    <h1>Baseball Statistics 2013</h1>
+    </div>
+    
+    <div id="navigation">
+    
+    
+<!--      Navigation Sidebar  -->
+
+<ul >
+<li> <a href="/Home">Home</a></li>
+    <li> <a href="/Teams">Teams</a></li>
+    <li> <a href="/Batters">Batters</a></li>
+    <li> <a href="/Pitchers">Pitchers</a> </li>
+    <li> <a href="/Managers">Managers</a> </li>
+    <li> <a href="/Views">Views </a> </li>
+    <li> <a href="/About">About</a> </li>
+     </ul>
+
+ 
+    </div>
+    
+    <div id="middle">
+     <h1>Arbitration Eligible Players</h1>
+     <p1> Choose Batters or Pitchers </br> This webpage shows players that did not qualified for free agency after the 2013 season </p1></br>
+	
+<!--        <p2 style = "color: white;">  Team Name: <input id="Name" type="text" /> </p2> <br /> -->
+    <button id="BatterArb" type="submit"> Batters </button>
+    <button id="PitcherArb" type="submit"> Pitchers</button>
+
+     <p id="output"></p>
+     <p id="pout"></p>
+        </div>
+    
+    
+<% include Foot %>
+
+
+

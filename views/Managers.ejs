@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Baseball Stats 2013</title>
+    
+    <link rel="stylesheet" type="text/css" href="Project2.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>    
+<script>
+    
+$(document).ready(function () {
+      $('#ManagerSubmit').click(function () {
+      var payload = {
+      Name: $('#Name').val(),
+                };
+
+                console.log(payload);
+
+                $.ajax({
+                    url: "/Managers",
+                    type: "POST",
+                    contentType: "application/json",
+        processData: false,
+                    data: JSON.stringify(payload),
+        complete: function (data) {
+        $('#output').html(data.responseText);
+        }
+        });
+            });
+        });
+
+$(document).ready(function () {
+            $('#updatesubmit').click(function () {
+                var payload = {
+                    Manager: $('#team-oldname').val(),
+NewteamName: $('#team-newname').val(),
+                };
+
+console.log(payload);
+
+                $.ajax({
+                    url: "/Managers/Update",
+                    type: "POST",
+                    contentType: "application/json",
+                    processData: false,
+                    data: JSON.stringify(payload),
+                    complete: function (data) {
+                        $('#upput').html(data.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+    
+    </head>
+ 
+
+<body>
+    <div id="top">
+    <h1>Baseball Statistics 2013</h1>
+    </div>
+    
+    <div id="navigation">
+    
+    
+<!--      Navigation Sidebar  -->
+
+<ul >
+<li> <a href="/Home">Home</a></li>
+    <li> <a href="/Teams">Teams</a></li>
+    <li> <a href="/Batters">Batters</a></li>
+    <li> <a href="/Pitchers">Pitchers</a> </li>
+    <li> <a href="/Managers">Managers</a> </li>
+    <li> <a href="/Views">Views</a> </li>
+    <li> <a href="/About">About</a> </li>
+     </ul>
+
+ 
+    </div>
+    
+    <div id="middle">
+     <h1>Managers</h1>
+        <p1> Enter a Team to get their Manager Statistics</p1></br>
+      <p2 style = "color: white;">  Team Name: <input id="Name" type="text" /> </p2> </br>
+    <input id="ManagerSubmit" type="submit" />
+    <p id="output"></p>
+
+<h3>Enter the old and new Player Name:</h3>
+    Manager: <input id="team-oldname" type="text" /> <br />
+New Team: <input id="team-newname" type="text" /> <br />
+    <input id="updatesubmit" type="submit" />
+    <p id="upput"></p>
+
+        </div>
+    
+    
+<% include Foot %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

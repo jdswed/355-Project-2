@@ -26,7 +26,31 @@
                     }
                 });
             });
+       
+
+            $('#BatterEnter').click(function () {
+                var payload = {
+                    Batter_Name: $('#name').val(),
+                    Team: $('#team').val(),
+                    Position: $('#position').val(),
+                    Service_Time: $('#Service_Time').val()
+                };
+
+                console.log(payload);
+
+                $.ajax({
+                    url: "/Batters/Enter",
+                    type: "POST",
+                    contentType: "application/json",
+                    processData: false,
+                    data: JSON.stringify(payload),
+                    complete: function (data) {
+                        $('#complete').html(data.responseText);
+                    }
+                });
+            });
         });
+
     </script>    
     </head>
  
@@ -47,6 +71,7 @@
   <li> <a href="/Batters">Batters</a></li>
   <li> <a href="/Pitchers">Pitchers</a> </li>
   <li> <a href="/Managers">Managers</a> </li>
+  <li> <a href="/Views">Views</a> </li>
   <li> <a href="/About">About</a> </li>
 </ul>
 
@@ -56,11 +81,22 @@
     <div id="middle">
     <h1>Batters</h1>
         <p1> Enter the name of a team to get their Batters</p1> </br>
-        Team Name: <input id="Team" type="text" /> <br />
+        Team Name: <input id="Team" type="text" /> </br >
     <input id="BatterSubmit" type="submit" />
     <p id="output"></p>
         
-        </div>
+</br>
+</br>
+</br>
+<h3>Enter a Batter enter into the database:</h3>
+      Name: <input id="name" type="text" /> <br />
+      Team: <input id="team" type="text" /> <br />
+      Position: <input id="position" type="text" /> <br />
+      Service Time: <input id="Service_Time" type="text" /> <br />
+
+<input id="BatterEnter" type="submit" /> </div>
+    <p id="complete"></p>
+    
     
     <div class="footer"> Copyright &copy; SweDroid Technology</div>
     </body>

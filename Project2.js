@@ -47,7 +47,7 @@ app.use(connect.urlencoded());
 app.use(connect.json());
 
 
-// Main route sends our HTML file
+// Main route to get to all my pages
 app.get('/', function(req, res) {
     res.render('Home');
 });
@@ -68,42 +68,26 @@ app.get('/Pitchers', function(req, res) {
     res.render('Pitchers');
 });
 
+app.get('/Managers', function(req, res) {
+    res.render('Managers');
+});
+app.get('/Views', function(req, res) {
+    res.render('Views');
+});
 app.get('/About', function(req, res) {
     res.render('About');
 });
 
-/*
-app.get('/Teams', function(req, res){
-   connection.query('SELECT * FROM Team',
-function(err, result) {
-console.log(result)})});
-*/
 
 app.use(express.static(__dirname  + '/public'));
 
 // Update MySQL database
 
-/*
-app.post('/Batters', function (req, res) {
-    console.log(req.body);
-            connection.query('select Batter_Name, Team  from Batters where Name = ?', req.body.Batter_Name, 
-		function (err, result) {
-                    console.log(result);
-                    if(result.length > 0) {
-  	              res.send('Name: ' + result[0].Batter_Name + '<br />' +
-		  	       'Team: ' + result[0].Team
-		      );
-                    }
-                    else
-                      res.send('Batter does not exist.');
-		});
-        
-    });
-*/
 
-app.post('/Teams', function (req, res) {
+
+app.post('/Teams/Select', function (req, res) {
     console.log(req.body);
-    connection.query('select * from Team', 
+    connection.query('select Name from Team', 
 		     function (err, result) {
 			 console.log(result);
 			 var responseHTML = '<select id="Team-list">';
@@ -111,116 +95,323 @@ app.post('/Teams', function (req, res) {
 			     var option = '<option value="' + result[i].Name + '">'  + result[i].Name + '</option>';
 			     console.log(option);
 			     responseHTML += option;
-			     }
-            responseHTML += '</select>';
+			 }
+			 responseHTML += '</select>';
 			 res.send(responseHTML);
-			 });
+		     });
 });
+app.post('/Teams', function (req, res) {
+
+    console.log(req.body);
+    if(typeof req.body.id != 'undefined') {
+	
+	var query ="select * from Team where Name  = '"+req.body.id+"'";
+	
+	connection.query(query,
+			 function (err, result) {
+			     console.log(err);
+			     console.log(result);
+			     if(result.length > 0) {
+				 
+				 var  responseHTML =' <table class="users"><tr><th>Name</th><th>League</th><th>Division</th><th>World Series Wins</th><th>City</th><th>State</th><th>Stadium</th><th>Payroll</th><th>Winning Percentage</th></tr>';
+				 
+				 
+				 responseHTML += '<tr><td>' + result[0].Name + '</td>' +
+				     '<td>' + result[0].League + '</td>' +
+				     '<td>' + result[0].Division + '</td>' +
+				     '<td>' + result[0].Num_Championships + '</td>' +
+				     '<td>' + result[0].City + '</td>' +
+				     '<td>' + result[0].State + '</td>' +
+				     '<td>' + result[0].Stadium + '</td>' +
+				     '<td>' + result[0].Payroll + '</td>' +
+				     '<td>' + result[0].Win_Percent + '</td>' +
+				     '</tr></table>';
+				 
+				 res.send(responseHTML);
+                }
+			     else
+				 res.send('Team does not exist.');
+            }
+			);
+    }
+    
+    
+    else {
+        res.send('No data for Team');
+    }
+});
+
 
 app.post('/Batters', function (req, res) {
     console.log(req.body);
-            connection.query('select * from Batters where Team = ?', req.body.Team, 
-			     function (err, result) {
-                    console.log(result);
-                    if(result.length > 0) {
-			              res.send('Batter_Name: ' + result[0].Batter_Name + '<br />' +
-					              'Team: ' + result[0].Team + '<br />' +
-                           'Position: ' + result[0].Position + '<br />' +
-                           'Service Time: ' + result[0].Service_Time + '<br />' +
-                           'Games: ' + result[0].Games + '<br />' +
-                           'Plate Appearences: ' + result[0].PA + '<br />' +
-                           'At Bats : ' + result[0].AB + '<br />' +
-                           'Runs: ' + result[0].Runs + '<br />' +
-                           'Hits: ' + result[0].Hits + '<br />' +
-                           'Doubles: ' + result[0].Doubles + '<br />' +
-                           'Triples: ' + result[0].Triples + '<br />' +
-                           'HomeRuns: ' + result[0].HR + '<br />' +
-                           'RBI: ' + result[0].RBI + '<br />' +
-                           'SB: ' + result[0].SB + '<br />' +
-                           'CS: ' + result[0].CS + '<br />' +
-                           'Strikeouts: ' + result[0].SO + '<br />' +
-                           'Batting Average: ' + result[0].Batting_Average + '<br />' +
-                           'On Base Percentage: ' + result[0].OBP + '<br />' +
-                           'Slugging Percentage: ' + result[0].SLG + '<br />' +
-                           'On Base Slugging: ' + result[0].OPS + '<br />' +
-                           'Awards: ' + result[0].Awards 
-					             );
-                    }
-                    else
-                      res.send('Team does not exist Silly.');
-				 });
-        
-    });
+    connection.query('select * from Batters where Team = ?', req.body.Team, 
+		     function (err, result) {
+			 console.log(result);
+			 if(result.length > 0) {
+var  responseHTML =' <table class="users"><tr><th>Name</th><th>Team</th><th>Position</th><th>Service Time</th><th>Games</th><th>PA</th><th>AB</th><th>Runs</th><th>Hits</th><th>2B</th><th>3B</th><th>HR</th><th>RBI</th><th>SB</th><th>CS</th><th>SO</th><th>BA</th><th>OBP</th><th>SLG</th><th>OPS</th><th>Awards</th></tr>';
+			     for (var i=0; result.length > i; i++) {
 
+
+			     responseHTML+= '<td>'+ result[i].Batter_Name + '</td>' +
+				 '<td>' + result[i].Team + '</td>' +
+				 '<td>' + result[i].Position + '</td>' +
+				 '<td>' + result[i].Service_Time + '</td>' +
+				 '<td>' + result[i].Games + '</td>' +
+				 '<td>' + result[i].PA + '</td>' +
+				 '<td>' + result[i].AB + '</td>' +
+				 '<td>' + result[i].Runs + '</td>' +
+				 '<td>' + result[i].Hits + '</td>' +
+				 '<td>' + result[i].Doubles + '</td>' +
+				 '<td>' + result[i].Triples + '</td>' +
+				 '<td>' + result[i].HR + '</td>' +
+				 '<td>' + result[i].RBI + '</td>' +
+				 '<td>' + result[i].SB + '</td>' +
+				 '<td>' + result[i].CS + '</td>' +
+				 '<td>' + result[i].SO + '</td>' +
+				 '<td>' + result[i].Batting_Average + '</td>' +
+				 '<td>' + result[i].OBP + '</td>' +
+				 '<td>' + result[i].SLG + '</td>' +
+				 '<td>' + result[i].OPS + '</td>' +
+				 '<td>' + result[i].Awards + '</td>'+ 
+				 '</tr>';
+			     
+			     }
+			     responseHTML+= '</table>';
+			     res.send(responseHTML);
+			 }
+			 
+		     
+			 
+			 else
+			     res.send('Team does not exist Silly.');
+		     });
+    
+});
+
+//Enter a Batter into the Database
+app.post('/Batters/Enter', function (req, res) {
+    
+    
+    connection.query('INSERT INTO Batters SET ?', req.body, 
+		     function (err, result) {
+			 if (err) throw err;
+			 connection.query('select * from Batters where Batter_Name = ?', req.body.Batter_Name, 			 
+					  function (err, result) {					  
+					  if(result.length > 0) {
+					 
+					      res.send('You Inserted Slugger: ' + result[0].Batter_Name);
+					  }
+					  else
+                                              res.send('Batter was not inserted.');
+					 });
+                    }
+                    );
+	 
+});
+
+
+//Display a Single Pitcher's Stats
 app.post('/Pitchers', function (req, res) {
     console.log(req.body);
             connection.query('select * from Pitchers where Name = ?', req.body.Name, 
 			     function (err, result) {
-                    console.log(result);
-                    if(result.length > 0) {
-			              res.send('Name: ' + result[0].Name + '<br />' +
-					              'Team: ' + result[0].Team + '<br />' +
-                           'Type: ' + result[0].Type + '<br />' +
-                           'Service Time: ' + result[0].Service_Time + '<br />' +
-                           'Wins: ' + result[0].Wins + '<br />' +
-                           'Losses: ' + result[0].Losses + '<br />' +
-                           'Winning Percentage: ' + result[0].Win_Percent + '<br />' +
-                           'ERA: ' + result[0].ERA + '<br />' +
-                           'Games: ' + result[0].Games + '<br />' +
-                           'Games Started: ' + result[0].Games_Started + '<br />' +
-                           'Games Finished: ' + result[0].Games_Finished + '<br />' +
-                           'Complete Games: ' + result[0].Complete_Games + '<br />' +
-                           'Shutouts: ' + result[0].Shutouts + '<br />' +
-                           'Saves: ' + result[0].Saves + '<br />' +
-                           'Innings: ' + result[0].Innings_Pitched + '<br />' +
-                           'Hits: ' + result[0].Hits + '<br />' +
-                           'Runs: ' + result[0].Runs + '<br />' +
-                           'Earned Runs: ' + result[0].Earned_Runs + '<br />' +
-                           'Home Runs: ' + result[0].HR + '<br />' +
-                           'Walks: ' + result[0].Walks + '<br />' +
-                           'Intentional Walks: ' + result[0].IBB + '<br />' +
-                           'Strikeouts: ' + result[0].SO + '<br />' +
-                           'Awards: ' + result[0].Awards 
-					             );
-                    }
+				 console.log(result);
+				 if(result.length > 0) {
+				     //create a table
+				     var  responseHTML =' <table class="users"><tr><th>Name</th><th>Team</th><th>Type</th><th>Service Time</th><th>Wins</th><th>Losses</th><th>Percent</th><th>ERAs</th><th>G</th><th>GS</th><th>GF</th><th>CG</th><th>SHO</th><th>Saves</th><th>Innings</th><th>H</th><th>Runs</th><th>Earned Runs</th><th>HR</th><th>BB</th><th>IBB</th><th>SO</th><th>Awards</th></tr>';
+
+			             responseHTML+= '<tr><td>' +result[0].Name + '</td >' +
+					 '<td>' + result[0].Team + '</td >' +
+					 '<td>' + result[0].Type + '</td >' +
+					 '<td>' + result[0].Service_Time + '</td >' +
+					 '<td>' + result[0].Wins + '</td >' +
+					 '<td>' + result[0].Losses + '</td >' +
+					 '<td>' + result[0].Win_Percent + '</td >'+
+					 '<td>' + result[0].ERA + '</td >' +
+					 '<td>' + result[0].Games + '</td >' +
+					 '<td>' + result[0].Games_Started + '</td >' +
+					 '<td>' + result[0].Games_Finished + '</td >' +
+					 '<td>' + result[0].Complete_Games +  '</td >'+
+					 '<td>' + result[0].Shutouts + '</td>' +
+					 '<td>' + result[0].Saves + '</td >' +
+					 '<td>' + result[0].Innings_Pitched + '</td >' +
+					 '<td>' + result[0].Hits + '</td>' +
+					 '<td>' + result[0].Runs + '</td >' +
+					 '<td>' + result[0].Earned_Runs + '</td >' +
+					 '<td>' + result[0].HR + '</td>' +
+					 '<td>' + result[0].Walks + '</td>' +
+					 '<td>' + result[0].IBB + '</td>' +
+					 '<td>' + result[0].SO + '</td>' +
+					 '<td>' + result[0].Awards + '</tr > </table>';
+				     res.send(responseHTML);    
+				 }
                     else
-                      res.send('Pitcher does not exist.');
-				 });
-        
-    });
-/*
-app.post('/Pitchers', function (req, res) {
-    console.log(req.body);
-            connection.query('select * from Pitchers where Team = ?', req.body.Team, 
-			     function (err, result) {
-                    console.log(result);
-                    if(result.length > 0) {
-			              res.send('Name: ' + result[0].Name + 'br />' );
-                    }
-                    else
-                      res.send('Team does not exist.');
-				 });
-        
-    });*/
-app.post('/Team', function (req, res) {
-    console.log(req.body);
-    connection.query('INSERT INTO Teams  SET ?', req.body, 
-        function (err, result) {
-            if (err) throw err;
-            connection.query('select Name, Num_Championships from Team where Name = ?', req.body.Name, 
-		function (err, result) {
-                    console.log(result);
-                    if(result.length > 0) {
-  	              res.send('Team: ' + result[0].Name + '<br />' +
-		  	       'Number of Championships: ' + result[0].Num_Championships
-		      );
-                    }
-                    else
-                      res.send('The Team  was not able to be inserted.');
-		});
-        }
-    );
+			res.send('Pitcher does not exist.');
+			     });
+    
 });
+
+//Enter a Pitcher into the Database                                                                                                                                                                                                                                            
+app.post('/Pitchers/Enter', function (req, res) {
+
+
+    connection.query('INSERT INTO Pitchers SET ?', req.body,
+                     function (err, result) {
+                         if (err) throw err;
+                         connection.query('select * from Pitchers where Name= ?', req.body.Name,
+                                          function (err, result) {
+                                          if(result.length > 0) {
+
+                                              res.send('You Inserted Hurler: ' + result[0].Name);
+                                          }
+                                          else
+                                              res.send('Pitcher was not inserted.');
+                                         });
+                    }
+                    );
+
+});
+app.post('/Managers', function (req, res) {
+
+    console.log(req.body);
+            connection.query('select * from Managers where Current_Team = ?', req.body.Name,
+                             function (err, result) {
+                                 console.log(result);
+                                 if(result.length > 0) {
+                                     //create a table                                                                                                 
+                                     var  responseHTML =' <table class="users"><tr><th>Name</th><th>Team</th><th>Wins</th><th>Losses</th><th>Previously Managed</th></tr>';
+				     
+	                             responseHTML+= '<tr><td>' +result[0].Name + '</td >' +
+                                         '<td>' + result[0].Current_Team + '</td >' +
+                                         '<td>' + result[0].Wins + '</td >' +
+                                         '<td>' + result[0].Losses + '</td >' +
+                                         '<td>' + result[0].Previous_Teams + '</tr > </table>';
+                                     res.send(responseHTML);
+				 }
+				 else
+				     res.send('Team does not exist.');
+                             });
+    
+});
+
+app.post('/Views/Batters', function (req, res) {
+    console.log(req.body);
+    connection.query('select * from Arbitration_Batters ORDER BY Service_Time DESC', req.body.Name, 
+		          function (err, result) {
+			       console.log(result);
+			       if(result.length > 0) {
+var  responseHTML =' <table class="users"><tr><th>Name</th><th>Team</th><th>Position</th><th>Service Time</th><th>Games</th><th>PA</th><th>AB</th><th>Runs</th><th>Hits</th><th>2B</th><th>3B</th><th>HR</th><th>RBI</th><th>SB</th><th>CS</th><th>SO</th><th>BA</th><th>OBP</th><th>SLG</th><th>OPS</th><th>Awards</th></tr>';
+				        for (var i=0; result.length > i; i++) {
+					         //var id = result[i].Name;
+					        /* var  responseHTML =' <table class="users"><tr><th>Name</th><th>Team</th><th>Position</th><th>Service Time</th><th>Games</th><th>PA</th><th>AB</th><th>Runs</th><th>Hits</th><th>2B</th><th>3B</th><th>HR</th><th>RBI</th><th>SB</th><th>CS</th><th>SO</th><th>BA</th><th>OBP</th><th>SLG</th><th>OPS</th><th>Awards</th></tr>';*/
+					         responseHTML+= '<td>'+ result[i].Batter_Name + '</td>' +
+						 '<td>' +'<a href="http://www.'+ result[i].Team +'.com/">'+ result[i].Team+' </a></td>' +
+						 '<td>' + result[i].Position + '</td>' +
+						 '<td>' + result[i].Service_Time + '</td>' +
+						 '<td>' + result[i].Games + '</td>' +
+						 '<td>' + result[i].PA + '</td>' +
+						 '<td>' + result[i].AB + '</td>' +
+						 '<td>' + result[i].Runs + '</td>' +
+						 '<td>' + result[i].Hits + '</td>' +
+						 '<td>' + result[i].Doubles + '</td>' +
+						 '<td>' + result[i].Triples + '</td>' +
+						 '<td>' + result[i].HR + '</td>' +
+						 '<td>' + result[i].RBI + '</td>' +
+						 '<td>' + result[i].SB + '</td>' +
+						 '<td>' + result[i].CS + '</td>' +
+						 '<td>' + result[i].SO + '</td>' +
+						 '<td>' + result[i].Batting_Average + '</td>' +
+						 '<td>' + result[i].OBP + '</td>' +
+						 '<td>' + result[i].SLG + '</td>' +
+						 '<td>' + result[i].OPS + '</td>' +
+						 '<td>' + result[i].Awards + '</td>'+ 
+						 '</tr>';
+					         
+					         }
+				        responseHTML+= '</table>';
+				        res.send(responseHTML);
+				    }
+			       
+			           
+			       
+			       else
+				        res.send('Hi');
+			           });
+    
+});
+
+//Display a Single Pitcher's Stats
+app.post('/Views/Pitchers', function (req, res) {
+    console.log(req.body);
+            connection.query('select * from Arbitration_Pitchers ORDER BY Service_Time DESC', req.body.Name, 
+			          function (err, result) {
+				       console.log(result);
+				       if(result.length > 0) {
+					        //create a table
+					        var  responseHTML =' <table class="users"><tr><th>Name</th><th>Team</th><th>Type</th><th>Service Time</th><th>Wins</th><th>Losses</th><th>Percent</th><th>ERAs</th><th>G</th><th>GS</th><th>GF</th><th>CG</th><th>SHO</th><th>Saves</th><th>Innings</th><th>H</th><th>Runs</th><th>Earned Runs</th><th>HR</th><th>BB</th><th>IBB</th><th>SO</th><th>Awards</th></tr>';
+					   for (var i=0; result.length > i; i++) {
+
+					                responseHTML+= '<tr><td>' +result[i].Name + '</td >' +
+					        '<td>' + '<a href="http://www.'+ result[i].Team +'.com/">'+ result[i].Team+' </a></td>' +
+					        '<td>' + result[i].Type + '</td >' +
+					        '<td>' + result[i].Service_Time + '</td >' +
+					        '<td>' + result[i].Wins + '</td >' +
+					        '<td>' + result[i].Losses + '</td >' +
+					        '<td>' + result[i].Win_Percent + '</td >'+
+					        '<td>' + result[i].ERA + '</td >' +
+					        '<td>' + result[i].Games + '</td >' +
+					        '<td>' + result[i].Games_Started + '</td >' +
+					        '<td>' + result[i].Games_Finished + '</td >' +
+					        '<td>' + result[i].Complete_Games +  '</td >'+
+					        '<td>' + result[i].Shutouts + '</td>' +
+					        '<td>' + result[i].Saves + '</td >' +
+					        '<td>' + result[i].Innings_Pitched + '</td >' +
+					        '<td>' + result[i].Hits + '</td>' +
+					        '<td>' + result[i].Runs + '</td >' +
+					        '<td>' + result[i].Earned_Runs + '</td >' +
+					        '<td>' + result[i].HR + '</td>' +
+					        '<td>' + result[i].Walks + '</td>' +
+					        '<td>' + result[i].IBB + '</td>' +
+					        '<td>' + result[i].SO + '</td>' +
+					        '<td>' + result[i].Awards + '</tr >';
+					       
+					   }
+					   responseHTML+= '</table>';
+                                           res.send(responseHTML);
+                                       }
+
+				      
+				      else
+					  res.send('Pitcher does not exist.');
+				  });
+    
+});
+
+app.post('/Managers/Update', function (req, res) {
+
+    console.log(req.body);
+    if(typeof req.body.id != 'undefined') {
+
+        var query ="UPDATE Managers SET Current_Team = '" + req.body.Current_Team +"' where Name  = '"+req.body.Name;
+
+        connection.query(query,
+                         function (err, result) {
+                             console.log(err);
+                             console.log(result);
+                             if(result.length > 0) {
+
+                                              res.send('You Updated: ' + result[0].Name +'s Current Team');
+                                          }
+                                          else
+                                              res.send('Team does not Exist.');
+                                         });
+                    }
+                 
+
+});
+
+
+
 
 // Begin listening
 
