@@ -31,8 +31,8 @@ $(document).ready(function () {
 $(document).ready(function () {
             $('#updatesubmit').click(function () {
                 var payload = {
-                    Manager: $('#team-oldname').val(),
-NewteamName: $('#team-newname').val(),
+                    Team: $('#oldname').val(),
+                    NewName: $('#newname').val(),
                 };
 
 console.log(payload);
@@ -84,9 +84,9 @@ console.log(payload);
     <input id="ManagerSubmit" type="submit" />
     <p id="output"></p>
 
-<h3>Enter the old and new Player Name:</h3>
-    Manager: <input id="team-oldname" type="text" /> <br />
-New Team: <input id="team-newname" type="text" /> <br />
+<h3>Enter the team and change the manager:</h3>
+    Team: <input id="oldname" type="text" /> <br />
+New Manager: <input id="newname" type="text" /> <br />
     <input id="updatesubmit" type="submit" />
     <p id="upput"></p>
 

@@ -388,28 +388,38 @@ app.post('/Views/Pitchers', function (req, res) {
 });
 
 app.post('/Managers/Update', function (req, res) {
-
     console.log(req.body);
-    if(typeof req.body.id != 'undefined') {
-
-        var query ="UPDATE Managers SET Current_Team = '" + req.body.Current_Team +"' where Name  = '"+req.body.Name;
-
-        connection.query(query,
-                         function (err, result) {
-                             console.log(err);
-                             console.log(result);
-                             if(result.length > 0) {
-
-                                              res.send('You Updated: ' + result[0].Name +'s Current Team');
-                                          }
-                                          else
-                                              res.send('Team does not Exist.');
-                                         });
+    var qry1 = "UPDATE Managers SET Name ='" + req.body.NewName +  "' WHERE Current_Team = '" +  req.body.Team + "'";
+    //console.log(qry1);
+    connection.query (qry1,
+        function (err, result) {
+            if (err) throw err;
+            connection.query('select * from Managers where Name = ?', req.body.NewName, 
+			     function (err, result) {
+                    if(result.length > 0) {
+                      res.send(
+                               'New Manager: ' + result[0].Name
+                               
+ 
+			       );
                     }
-                 
-
+                    else
+                      res.send('Player Does Not Exist.');
+				 }
+			     );
+	    }
+    );
 });
 
+						  
+			
+			
+			 
+			 
+			 
+			 
+			 
+			 
 
 
 
