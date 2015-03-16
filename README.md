@@ -1,4 +1,4 @@
-355-Project-2
+Baseball DataBase Website
 =============
 
-Baseball 
+Database design final project 
